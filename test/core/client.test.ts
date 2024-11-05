@@ -56,11 +56,16 @@ describe("API client", () => {
             "Call to 'getMe' failed! (42: evil)",
         );
     });
-});
 
-// TODO: add tests:
-// - for all config options
-// - for webhook reply
-// - for api transformers
-// - for networking errors
-// - for networking timeouts
+    it("should handle cloned requests", async () => {
+        response = { ok: true, result: { testValue: 0 } };
+        const clonedRequest = new Request("https://example.com", {
+            method: "POST",
+            body: JSON.stringify({ update_id: 0 }),
+        });
+        const handler = webhookCallback(bot, "std/http");
+        await handler(clonedRequest);
+        const me = await api.raw.getMe();
+        assertEquals<unknown>(me, response.result);
+    });
+});

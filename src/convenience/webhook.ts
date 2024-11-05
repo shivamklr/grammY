@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import { type Bot } from "../bot.ts";
 import { type Context } from "../context.ts";
 import { type WebhookReplyEnvelope } from "../core/client.ts";
@@ -133,8 +132,9 @@ export function webhookCallback<C extends Context = Context>(
                 await respond(json);
             },
         };
+        const clonedUpdate = await update.then((req) => req.clone());
         await timeoutIfNecessary(
-            bot.handleUpdate(await update, webhookReplyEnvelope),
+            bot.handleUpdate(clonedUpdate, webhookReplyEnvelope),
             typeof timeout === "function" ? () => timeout(...args) : timeout,
             ms,
         );

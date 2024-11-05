@@ -493,9 +493,10 @@ const serveHttp: ServeHttpAdapter = (requestEvent) => ({
 /** std/http web server */
 const stdHttp: StdHttpAdapter = (req) => {
     let resolveResponse: (response: Response) => void;
+    const clonedRequest = req.clone();
     return {
-        update: req.json(),
-        header: req.headers.get(SECRET_HEADER) || undefined,
+        update: clonedRequest.json(),
+        header: clonedRequest.headers.get(SECRET_HEADER) || undefined,
         end: () => {
             if (resolveResponse) resolveResponse(ok());
         },
